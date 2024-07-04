@@ -21,7 +21,7 @@ class WeatherDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: height(context, 0.25),
+      height: height(context, 0.3),
       width: width(context, 0.9),
       decoration: BoxDecoration(
         color: Colors.deepPurple,

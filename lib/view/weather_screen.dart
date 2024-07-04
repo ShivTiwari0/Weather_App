@@ -119,7 +119,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          20.height,
+                          10.height,
                           Text(
                             weatherViewModel.weatherData!.weather.first.main,
                             style: TextStyle(
