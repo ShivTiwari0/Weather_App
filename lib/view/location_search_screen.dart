@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:provider/provider.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:weather_app/res/apptheme.dart';
 import 'package:weather_app/utils/colors.dart';
 import 'package:weather_app/utils/const.dart';
+import 'package:weather_app/utils/utils.dart';
 
 import 'package:weather_app/view/weather_screen.dart';
 import 'package:weather_app/view/widget/cusstom_pageroute.dart';
@@ -27,26 +29,39 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
   double? lat;
   double? long;
 
-  // getCurrentLocation() async {
-  //   LocationPermission permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied ||
-  //       permission == LocationPermission.deniedForever) {
-  //     Utils.snackBar('Location Denied', context);
-  //     LocationPermission ask = await Geolocator.requestPermission();
-  //   } else {
-  //     Position currentPosition = await Geolocator.getCurrentPosition(
-  //         desiredAccuracy: LocationAccuracy.medium);
-  //     setState(() {
-  //       lat = currentPosition.latitude;
-  //       long = currentPosition.longitude;
-  //     });
+  getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      Utils.snackBar('Location Denied', context);
+      LocationPermission ask = await Geolocator.requestPermission();
+    } else {
+      Position currentPosition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium);
+      setState(() {
+        lat = currentPosition.latitude;
+        long = currentPosition.longitude;
+      });
 
-  //     List<Placemark> placemarks = await placemarkFromCoordinates(lat!, long!);
-  //     if (placemarks.isNotEmpty) {
-  //       controller.text = placemarks[0].toString();
-  //     }
-  //   }
-  // }
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat!, long!);
+      if (placemarks.isNotEmpty) {
+        String placemarkString = '';
+        placemarks.forEach((element) {
+          placemarkString +=
+              '${element.name ?? ''} ,${element.street ?? ''}, ${element.country ?? ''}\n';
+        });
+
+        // Trim any trailing new line characters
+        placemarkString = placemarkString.trim();
+
+        // Update the controller text
+        controller.text = placemarkString;
+
+        // Print the placemark data
+        print(placemarkString);
+      }
+    }
+  }
 
   Future<void> _getCoordinates(String address) async {
     try {
@@ -149,7 +164,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                 padding: const EdgeInsets.all(defaultPadding),
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // getCurrentLocation();
+                    getCurrentLocation();
                   },
                   icon: SvgPicture.asset(
                     location,

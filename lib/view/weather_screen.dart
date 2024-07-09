@@ -141,7 +141,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             iconCode: weatherViewModel
                                 .weatherData!.weather.first.icon,
                           ),
-                          20.height,
                           WeatherDetail(
                             windSpeed: weatherViewModel.weatherData!.wind.speed
                                 .toString(),
